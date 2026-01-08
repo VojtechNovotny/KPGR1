@@ -36,7 +36,7 @@ public class SeedFill implements Filler {
             seedFill(x + 1, y);
             seedFill(x - 1, y);
             seedFill(x, y + 1);
-            seedFill(x, y - 1);
-        }
+            seedFill(x, y + 1);
+        };
     }
 }

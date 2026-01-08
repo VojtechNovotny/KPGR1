@@ -1,5 +1,6 @@
 package control;
 
+import fill.SeedFill;
 import rasterize.*;
 import view.Panel;
 import model.Point;
@@ -16,6 +17,7 @@ public class Controller2D implements Controller {
 
     private LineRasterizer filledLineRasterizer;
     private PolygonRasterizer polygonRasterizer;
+    private SeedFill seedFill;
 
     private enum DrawMode { LINE, DASHED_LINE, POLYGON };
     private DrawMode drawMode = DrawMode.LINE;
@@ -32,6 +34,8 @@ public class Controller2D implements Controller {
     private void initObjects(Raster raster) {
         filledLineRasterizer = new FilledLineRasterizer(raster);
         polygonRasterizer = new PolygonRasterizer(raster);
+
+        seedFill = new SeedFill(raster);
     }
 
     @Override
@@ -72,6 +76,9 @@ public class Controller2D implements Controller {
             public void mouseClicked(MouseEvent e) {
                 if (e.isControlDown()) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
+                        seedFill.setSeed(new Point(e.getX(), e.getY()));
+                        seedFill.setFillColor(Color.BLUE.getRGB());
+                        seedFill.fill();
                     } else if (SwingUtilities.isRightMouseButton(e)) {
                         //TODO
                     }
