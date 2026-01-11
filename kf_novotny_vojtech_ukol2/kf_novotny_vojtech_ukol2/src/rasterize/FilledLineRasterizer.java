@@ -11,7 +11,7 @@ public class FilledLineRasterizer extends LineRasterizer {
     }
 
     @Override
-    public void rasterize(int x1, int y1, int x2, int y2, int color, Boolean dashed) {
+    public void rasterize(int x1, int y1, int x2, int y2, int color, boolean dashed) {
         float k = (y2 -y1) / (float) (x2 - x1);
         float q = y1 - k * x1;
 

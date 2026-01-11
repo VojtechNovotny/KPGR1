@@ -20,9 +20,9 @@ public abstract class LineRasterizer {
         this.color = new Color(color);
     }
 
-    public void rasterize(Line line, Boolean dashed) {
+    public void rasterize(Line line, boolean dashed) {
         rasterize(line.getX1(), line.getY1(), line.getX2(), line.getY2(), line.getColor(), dashed);
     }
 
-    public abstract void rasterize(int x1, int y1, int x2, int y2, int color, Boolean dashed);
+    public abstract void rasterize(int x1, int y1, int x2, int y2, int color, boolean dashed);
 }
