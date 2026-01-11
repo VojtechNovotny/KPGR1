@@ -35,13 +35,21 @@ public class ScanLine implements Filler {
                 edge = new Edge(points.get(i), points.get(i+1));
             };
 
-            edges.add(edge);
+            if (!edge.isHorizontal()) {
+                edge.orientate();
+                edges.add(edge);
+            }
+        }
+
+        for (int j = 0; j < edges.size(); j++) {
+            Edge currentEdge = edges.get(j);
+            System.out.printf("edge %d from (%d, %d) to (%d, %d)\n", j+1, currentEdge.getX1(), currentEdge.getY1(), currentEdge.getX2(), currentEdge.getY2());
         }
 
         // TODO projet body (list points) a vytvořit z nich hrany
         // 0. a 1. bod budou první hranou, 1. a 2. bod budou druhou hranou, ..., poslední a nultý DONE
-        // ignorovat vodorovné hrany
-        // vytvořené (nevodorovnorné) hrany zorientovat a přidat do seznamu
+        // ignorovat vodorovné hrany DONE
+        // vytvořené (nevodorovnorné) hrany zorientovat a přidat do seznamu DONE
 
         // vysledek = seznam zorientovaných hran bez vodorovných úseků
 

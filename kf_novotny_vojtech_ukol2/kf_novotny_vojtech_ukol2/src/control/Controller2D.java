@@ -54,7 +54,7 @@ public class Controller2D implements Controller {
         points.add(new Point(300, 300));
         points.add(new Point(500, 300));
         points.add(new Point(600, 100));
-        points.add(new Point(650, 550));
+        points.add(new Point(650, 500));
 
         for (int i = 0; i < points.size(); i++) {
             Point p1 = points.get(i);
@@ -67,7 +67,7 @@ public class Controller2D implements Controller {
                 p2 = points.get(i+1);
             };
 
-            System.out.printf("drawing line (%d) from |%d, %d| to |%d, %d|\n", i+1, p1.x, p1.y, p2.x, p2.y);
+            //System.out.printf("drawing line (%d) from |%d, %d| to |%d, %d|\n", i+1, p1.x, p1.y, p2.x, p2.y);
 
             filledLineRasterizer.rasterize(p1.x, p1.y, p2.x, p2.y, Color.WHITE.getRGB(), false);
         }
