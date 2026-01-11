@@ -63,18 +63,35 @@ public class ScanLine implements Filler {
             System.out.printf("edge %d from (%d, %d) to (%d, %d)\n", j+1, currentEdge.getX1(), currentEdge.getY1(), currentEdge.getX2(), currentEdge.getY2());
         }
 
-        System.out.printf("minY: %d, maxY: %d", minY, maxY);
+        System.out.printf("minY: %d, maxY: %d\n", minY, maxY);
 
         for (int y = minY; y <= maxY; y++) {
+            System.out.printf("finding intersections on y=%d\n", y);
              List<Integer> intersections = new ArrayList<>();
+
+             for (int k = 0; k < edges.size(); k++) {
+                 // Pokud má scan line průsečík s hranou získáme daný průsečík a vložíme ho do seznamu
+                 if (edges.get(k).hasIntersection(y)) {
+                     intersections.add(edges.get(k).getIntersection(y));
+                 }
+             }
              // vnořený cyklus
             // projít všechny hrany (list edges)
             // pokud má hrana průsečík na daném Y tak vypočítat X hodnotu na hodnotu průsečíku a uložit ji do seznamu
 
             // nyní je naplněný seznam průsečíků
 
-            // setřídit průsečíky
+            // Seřazení průsečíků
+            for (int l = 0; l < intersections.size(); l++) {
+                System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
+            }
+
+            //System.out.println("sorting intersetions ...");
             Collections.sort(intersections);
+
+            for (int l = 0; l < intersections.size(); l++) {
+                System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
+            }
 
             // vybarvení mezi průsečíky
             // spojení vždy sudého s lichým -> 0. a 1., 2. a 3., 4. a 5., ...

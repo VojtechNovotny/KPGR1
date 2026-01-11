@@ -10,12 +10,30 @@ public class Edge {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
-
-        // TODO vypočítat k a q
+        this.k = calcK(x1, y1, x2, y2);
+        this.q = calcQ(x1, y1, k);
     }
 
     public Edge(Point p1, Point p2) {
         this(p1.x, p1.y, p2.x, p2.y);
+    }
+
+    /**
+     * Vypočítá směrnici
+     * @param x1, y1, x2, y2 souřadnice bodů
+     * @return směrnice
+     */
+    private float calcK(int x1, int y1, int x2, int y2) {
+        return (float) (y2 - y1) / (x2 - x1);
+    }
+
+    /**
+     * Vypočítá posunutí na ose y
+     * @param x1, y1 souřadnice bodu a směrnice
+     * @return posunutí na ose y
+     */
+    private float calcQ(int x1, int y1, float k) {
+        return y1 - k * x1;
     }
 
     /**
@@ -39,6 +57,9 @@ public class Edge {
             int x1Copy = x1;
             x1 = x2;
             x2 = x1Copy;
+
+            k = calcK(x1, y1, x2, y2);
+            q = calcQ(x1, y1, k);
         }
     }
 
@@ -49,7 +70,8 @@ public class Edge {
      */
     public boolean hasIntersection(int y) {
         // Porovnání zda je y v rozsahu
-        return y >= y1 && y <= y2;
+        System.out.printf("hasIntersection(%d): y1=%d, y2=%d -> return %b\n", y, y1, y2, y <= y1 && y >= y2);
+        return y <= y1 && y >= y2;
     }
 
     /**
@@ -58,7 +80,6 @@ public class Edge {
      * @return x souřadnici průsečíku
      */
     public int getIntersection(int y) {
-        // TODO vypočítat průsečík pomocí y, k, q (osa Y)
         return Math.round((y - q) / k);
     }
 
