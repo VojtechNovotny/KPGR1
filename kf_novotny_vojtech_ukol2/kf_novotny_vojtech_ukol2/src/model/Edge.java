@@ -48,8 +48,8 @@ public class Edge {
      * @return true pokud průsečík existuje, jinak false
      */
     public boolean hasIntersection(int y) {
-        // TODO y, y1, y2 - porovnat zda je y v rozsahu
-        return false;
+        // Porovnání zda je y v rozsahu
+        return y >= y1 && y <= y2;
     }
 
     /**
@@ -59,8 +59,7 @@ public class Edge {
      */
     public int getIntersection(int y) {
         // TODO vypočítat průsečík pomocí y, k, q (osa Y)
-        return 0;
+        return Math.round((y - q) / k);
     }
-
 
 }
