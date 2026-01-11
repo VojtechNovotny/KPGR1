@@ -1,6 +1,9 @@
 package control;
 
+import fill.ScanLine;
 import fill.SeedFill;
+import model.Edge;
+import model.Line;
 import rasterize.*;
 import view.Panel;
 import model.Point;
@@ -8,6 +11,8 @@ import model.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller2D implements Controller {
 
@@ -18,6 +23,7 @@ public class Controller2D implements Controller {
     private LineRasterizer filledLineRasterizer;
     private PolygonRasterizer polygonRasterizer;
     private SeedFill seedFill;
+    private ScanLine scanLine;
 
     private enum DrawMode { LINE, DASHED_LINE, POLYGON };
     private DrawMode drawMode = DrawMode.LINE;
@@ -36,6 +42,38 @@ public class Controller2D implements Controller {
         polygonRasterizer = new PolygonRasterizer(raster);
 
         seedFill = new SeedFill(raster);
+
+        initTestScanLine(raster);
+    }
+
+    private void initTestScanLine(Raster raster) {
+        List<Point> points = new ArrayList<Point>();
+        points.add(new Point(30, 110));
+        points.add(new Point(10, 60));
+        points.add(new Point(40, 30));
+        points.add(new Point(60, 60));
+        points.add(new Point(100, 60));
+        points.add(new Point(120, 30));
+        points.add(new Point(130, 110));
+
+        for (int i = 0; i < points.size(); i++) {
+            Point p1 = points.get(i);
+            Point p2;
+
+            if (i == points.size()-1) {
+                // Poslední bod spojí s prvním
+                p2 = points.getFirst();
+            } else {
+                p2 = points.get(i+1);
+            };
+
+            System.out.printf("drawing line (%d) from |%d, %d| to |%d, %d|\n", i+1, p1.x, p1.y, p2.x, p2.y);
+
+            filledLineRasterizer.rasterize(p1.x, p1.y, p2.x, p2.y, Color.WHITE.getRGB(), false);
+        }
+
+        scanLine = new ScanLine(raster, points, Color.BLUE.getRGB(), Color.WHITE.getRGB());
+        scanLine.fill();
     }
 
     @Override

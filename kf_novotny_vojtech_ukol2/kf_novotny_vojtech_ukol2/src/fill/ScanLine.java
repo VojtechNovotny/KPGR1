@@ -25,14 +25,16 @@ public class ScanLine implements Filler {
     @Override
     public void fill() {
         List<Edge> edges = new ArrayList<>();
+        Edge edge;
+
         for (int i = 0; i < points.size(); i++) {
             // Poslední bod spojíme s prvním
             if (i == points.size()-1) {
-                Edge edge = new Edge(points.get(i), points.getFirst());
-                edges.add(edge);
+                edge = new Edge(points.get(i), points.getFirst());
+            } else {
+                edge = new Edge(points.get(i), points.get(i+1));
             };
 
-            Edge edge = new Edge(points.get(i+1), points.get(i+1));
             edges.add(edge);
         }
 
