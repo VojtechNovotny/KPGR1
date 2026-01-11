@@ -3,6 +3,7 @@ package model;
 public class Edge {
 
     private int x1, y1, x2, y2;
+    private float k, q; // směrnice a posunutí
 
     // TODO nahradit v celé code base Boolean na boolean
 
@@ -22,15 +23,23 @@ public class Edge {
      * @return true pokud je vodorovná, jinak false
      */
     public boolean isHorizontal() {
-        // TODO test na rovnost mezi y1 a y2
-        return false;
+        return y1 == y2;
     }
 
     /**
-     * Zorientuje hranu odshora dolů
+     * Zorientuje hranu odspoda nahoru (od ymax do ymin)
      */
     public void orientate() {
-        // TODO prohození hodnot, pokud y1 je větší než y2
+        // Prohození hodnot, pokud je y2 větší než y1
+        if (y2 > y1) {
+            int y1Copy = y1;
+            y1 = y2;
+            y2 = y1Copy;
+
+            int x1Copy = x1;
+            x1 = x2;
+            x2 = x1Copy;
+        }
     }
 
     /**

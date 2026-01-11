@@ -13,7 +13,7 @@ public class ScanLine implements Filler {
     private final Raster raster;
     private final List<Point> points;
     private final int fillColor;
-    private final int borderColor;
+    private final int borderColor; // na finální obtažení
 
     public ScanLine(Raster raster, List<Point> points, int fillColor, int borderColor) {
         this.raster = raster;

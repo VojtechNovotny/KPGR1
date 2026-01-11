@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/KPGR1.iml" filepath="$PROJECT_DIR$/.idea/KPGR1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf_novotny_vojtech_ukol1/kf_novotny_vojtech_ukol1.iml" filepath="$PROJECT_DIR$/kf_novotny_vojtech_ukol1/kf_novotny_vojtech_ukol1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kf_novotny_vojtech_ukol2/kf_novotny_vojtech_ukol2.iml" filepath="$PROJECT_DIR$/kf_novotny_vojtech_ukol2/kf_novotny_vojtech_ukol2.iml" />
+    </modules>
+  </component>
+</project>
