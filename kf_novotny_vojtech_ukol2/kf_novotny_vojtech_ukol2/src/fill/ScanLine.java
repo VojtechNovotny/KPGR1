@@ -26,6 +26,8 @@ public class ScanLine implements Filler {
     public void fill() {
         List<Edge> edges = new ArrayList<>();
         Edge edge;
+        int minY = points.getFirst().y;
+        int maxY = 0;
 
         for (int i = 0; i < points.size(); i++) {
             // Poslední bod spojíme s prvním
@@ -36,8 +38,23 @@ public class ScanLine implements Filler {
             };
 
             if (!edge.isHorizontal()) {
+                // Zorientování hrany a přidání do seznamu
                 edge.orientate();
                 edges.add(edge);
+
+                // Hledání minY a maxY
+                if (edge.getY1() < minY) {
+                    minY = edge.getY1();
+                }
+                if (edge.getY2() < minY) {
+                    minY = edge.getY2();
+                }
+                if (edge.getY1() > maxY) {
+                    maxY = edge.getY1();
+                }
+                if (edge.getY2() > maxY) {
+                    maxY = edge.getY2();
+                }
             }
         }
 
@@ -46,17 +63,7 @@ public class ScanLine implements Filler {
             System.out.printf("edge %d from (%d, %d) to (%d, %d)\n", j+1, currentEdge.getX1(), currentEdge.getY1(), currentEdge.getX2(), currentEdge.getY2());
         }
 
-        // TODO projet body (list points) a vytvořit z nich hrany
-        // 0. a 1. bod budou první hranou, 1. a 2. bod budou druhou hranou, ..., poslední a nultý DONE
-        // ignorovat vodorovné hrany DONE
-        // vytvořené (nevodorovnorné) hrany zorientovat a přidat do seznamu DONE
-
-        // vysledek = seznam zorientovaných hran bez vodorovných úseků
-
-        // najít min a max Y
-        int minY = points.getFirst().y;
-        int maxY = minY;
-        // projet všechny body (list points) a najít min a max Y (optimalizační krok - není potřeba)
+        System.out.printf("minY: %d, maxY: %d", minY, maxY);
 
         for (int y = minY; y <= maxY; y++) {
              List<Integer> intersections = new ArrayList<>();
