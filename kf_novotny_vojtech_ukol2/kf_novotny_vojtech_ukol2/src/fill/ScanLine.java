@@ -2,21 +2,24 @@ package fill;
 
 import model.Edge;
 import model.Point;
+import rasterize.FilledLineRasterizer;
+import rasterize.LineRasterizer;
 import rasterize.Raster;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ScanLine implements Filler {
 
-    private final Raster raster;
+    private final LineRasterizer filledLineRasterizer;
     private final List<Point> points;
     private final int fillColor;
     private final int borderColor; // na finální obtažení
 
-    public ScanLine(Raster raster, List<Point> points, int fillColor, int borderColor) {
-        this.raster = raster;
+    public ScanLine(LineRasterizer filledLineRasterizer, List<Point> points, int fillColor, int borderColor) {
+        this.filledLineRasterizer = filledLineRasterizer;
         this.points = points;
         this.fillColor = fillColor;
         this.borderColor = borderColor;
@@ -91,6 +94,10 @@ public class ScanLine implements Filler {
 
             for (int l = 0; l < intersections.size(); l++) {
                 System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
+            }
+
+            for (int m = 0; m < intersections.size(); m += 2) {
+                filledLineRasterizer.rasterize(intersections.get(m), y, intersections.get(m+1), y, Color.BLUE.getRGB(), false);
             }
 
             // vybarvení mezi průsečíky

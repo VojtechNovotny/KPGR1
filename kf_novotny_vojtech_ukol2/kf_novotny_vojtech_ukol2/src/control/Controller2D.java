@@ -72,7 +72,7 @@ public class Controller2D implements Controller {
             filledLineRasterizer.rasterize(p1.x, p1.y, p2.x, p2.y, Color.WHITE.getRGB(), false);
         }
 
-        scanLine = new ScanLine(raster, points, Color.BLUE.getRGB(), Color.WHITE.getRGB());
+        scanLine = new ScanLine(filledLineRasterizer, points, Color.BLUE.getRGB(), Color.WHITE.getRGB());
         scanLine.fill();
     }
 
