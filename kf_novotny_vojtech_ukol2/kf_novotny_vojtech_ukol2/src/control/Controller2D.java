@@ -48,13 +48,13 @@ public class Controller2D implements Controller {
 
     private void initTestScanLine(Raster raster) {
         List<Point> points = new ArrayList<Point>();
-        points.add(new Point(30, 110));
-        points.add(new Point(10, 60));
-        points.add(new Point(40, 30));
-        points.add(new Point(60, 60));
-        points.add(new Point(100, 60));
-        points.add(new Point(120, 30));
-        points.add(new Point(130, 110));
+        points.add(new Point(200, 500));
+        points.add(new Point(100, 300));
+        points.add(new Point(250, 100));
+        points.add(new Point(300, 300));
+        points.add(new Point(500, 300));
+        points.add(new Point(600, 100));
+        points.add(new Point(650, 550));
 
         for (int i = 0; i < points.size(); i++) {
             Point p1 = points.get(i);
