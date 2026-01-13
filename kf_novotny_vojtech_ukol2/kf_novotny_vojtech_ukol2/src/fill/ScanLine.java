@@ -41,9 +41,8 @@ public class ScanLine implements Filler {
             };
 
             if (!edge.isHorizontal()) {
-                // Zorientování hrany a přidání do seznamu
+                // Zorientování hrany
                 edge.orientate();
-                edges.add(edge);
 
                 // Hledání minY a maxY
                 if (edge.getY1() < minY) {
@@ -58,18 +57,23 @@ public class ScanLine implements Filler {
                 if (edge.getY2() > maxY) {
                     maxY = edge.getY2();
                 }
+
+                System.out.printf("edge %d -> p1=(%d, %d), p2=(%d, %d)\n", i+1, edge.getX1(), edge.getY1(), edge.getX2(), edge.getY2());
+
+                edge.shorten();
+                edges.add(edge);
             }
         }
 
-        for (int j = 0; j < edges.size(); j++) {
-            Edge currentEdge = edges.get(j);
-            System.out.printf("edge %d from (%d, %d) to (%d, %d)\n", j+1, currentEdge.getX1(), currentEdge.getY1(), currentEdge.getX2(), currentEdge.getY2());
-        }
+        //for (int j = 0; j < edges.size(); j++) {
+            //Edge currentEdge = edges.get(j);
+            //System.out.printf("edge %d from (%d, %d) to (%d, %d)\n", j+1, currentEdge.getX1(), currentEdge.getY1(), currentEdge.getX2(), currentEdge.getY2());
+        //}
 
         System.out.printf("minY: %d, maxY: %d\n", minY, maxY);
 
         for (int y = minY; y <= maxY; y++) {
-            System.out.printf("finding intersections on y=%d\n", y);
+            //System.out.printf("finding intersections on y=%d\n", y);
              List<Integer> intersections = new ArrayList<>();
 
              for (int k = 0; k < edges.size(); k++) {
@@ -85,16 +89,16 @@ public class ScanLine implements Filler {
             // nyní je naplněný seznam průsečíků
 
             // Seřazení průsečíků
-            for (int l = 0; l < intersections.size(); l++) {
-                System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
-            }
+            /** for (int l = 0; l < intersections.size(); l++) {
+                //System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
+            }*/
 
             //System.out.println("sorting intersetions ...");
             Collections.sort(intersections);
 
-            for (int l = 0; l < intersections.size(); l++) {
+            /**for (int l = 0; l < intersections.size(); l++) {
                 System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
-            }
+            }*/
 
             for (int m = 0; m < intersections.size(); m += 2) {
                 filledLineRasterizer.rasterize(intersections.get(m), y, intersections.get(m+1), y, Color.BLUE.getRGB(), false);

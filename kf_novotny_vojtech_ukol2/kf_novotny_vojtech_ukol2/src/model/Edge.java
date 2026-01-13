@@ -70,7 +70,7 @@ public class Edge {
      */
     public boolean hasIntersection(int y) {
         // Porovnání zda je y v rozsahu
-        System.out.printf("hasIntersection(%d): y1=%d, y2=%d -> return %b\n", y, y1, y2, y <= y1 && y >= y2);
+        //System.out.printf("hasIntersection(%d): y1=%d, y2=%d -> return %b\n", y, y1, y2, y <= y1 && y >= y2);
         return y <= y1 && y >= y2;
     }
 
@@ -81,6 +81,13 @@ public class Edge {
      */
     public int getIntersection(int y) {
         return Math.round((y - q) / k);
+    }
+
+    /**
+     *  Zkrátí hranu o jeden pixel
+     */
+    public void shorten() {
+        y1--;
     }
 
     public int getX1() {
