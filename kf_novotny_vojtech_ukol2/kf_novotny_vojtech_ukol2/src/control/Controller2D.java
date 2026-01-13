@@ -16,6 +16,7 @@ public class Controller2D implements Controller {
 
     private final RasterBufferedImage raster;
     private RasterBufferedImage rasterCopy;
+    private Graphics rasterGraphics;
     private int x,y;
 
     private LineRasterizer filledLineRasterizer;
@@ -30,6 +31,7 @@ public class Controller2D implements Controller {
 
     public Controller2D(Panel panel) {
         this.raster = (RasterBufferedImage) panel.getRaster();
+        this.rasterGraphics = raster.getGraphics();
 
         initObjects(panel.getRaster());
         initListeners(panel);
@@ -185,8 +187,19 @@ public class Controller2D implements Controller {
                 }
 
                 // Stisk klávesy "P" přepne na vykreslování polygonu
-                if (e.getKeyCode() == KeyEvent.VK_P) {
-                    drawMode = DrawMode.POLYGON;
+                if (e.getKeyCode() == KeyEvent.VK_M) {
+                    switch (drawMode) {
+                        case DrawMode.LINE:
+                            drawMode = DrawMode.POLYGON;
+                            rasterGraphics.clearRect(800, 117, 400, 20);
+                            //rasterGraphics.drawString("Aktivní mód: Polygon", 800, 130);
+                            break;
+                        case DrawMode.POLYGON:
+                            drawMode = DrawMode.LINE;
+                            rasterGraphics.clearRect(800, 117, 400, 20);
+                            //rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
+                            break;
+                    }
                 }
             }
         });
@@ -208,21 +221,20 @@ public class Controller2D implements Controller {
 
     private void copyRaster() {
         RasterBufferedImage copy = new RasterBufferedImage(raster.getWidth(), raster.getHeight());
-        copy.draw((RasterBufferedImage) raster);
+        copy.draw(raster);
         rasterCopy = copy;
     }
 
     private void pasteRasterCopy() {
         if (rasterCopy != null) {
-            RasterBufferedImage castedRaster = (RasterBufferedImage) raster;
-            castedRaster.draw(rasterCopy);
+            raster.draw(rasterCopy);
         }
     }
 
     private void createToolbar(RasterBufferedImage raster) {
-        Graphics rasterGraphics = raster.getGraphics();
         rasterGraphics.setColor(Color.WHITE);
-        rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
-        rasterGraphics.drawString("Test", 1000, 100);
+        rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+        rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 800, 100);
+        rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
     }
 }
