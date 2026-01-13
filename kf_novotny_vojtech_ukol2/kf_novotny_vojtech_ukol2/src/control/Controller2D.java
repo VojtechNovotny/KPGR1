@@ -2,8 +2,6 @@ package control;
 
 import fill.ScanLine;
 import fill.SeedFill;
-import model.Edge;
-import model.Line;
 import rasterize.*;
 import view.Panel;
 import model.Point;

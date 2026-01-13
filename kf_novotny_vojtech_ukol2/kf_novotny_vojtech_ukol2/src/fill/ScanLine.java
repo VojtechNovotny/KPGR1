@@ -32,6 +32,7 @@ public class ScanLine implements Filler {
         int minY = points.getFirst().y;
         int maxY = 0;
 
+        // Naplnění seznamu hranami
         for (int i = 0; i < points.size(); i++) {
             // Poslední bod spojíme s prvním
             if (i == points.size()-1) {
@@ -58,65 +59,46 @@ public class ScanLine implements Filler {
                     maxY = edge.getY2();
                 }
 
-                System.out.printf("edge %d -> p1=(%d, %d), p2=(%d, %d)\n", i+1, edge.getX1(), edge.getY1(), edge.getX2(), edge.getY2());
-
+                // Zkrácení hrany o jeden pixel
                 edge.shorten();
+                // Uložení do seznamu hran
                 edges.add(edge);
             }
         }
 
-        //for (int j = 0; j < edges.size(); j++) {
-            //Edge currentEdge = edges.get(j);
-            //System.out.printf("edge %d from (%d, %d) to (%d, %d)\n", j+1, currentEdge.getX1(), currentEdge.getY1(), currentEdge.getX2(), currentEdge.getY2());
-        //}
-
-        System.out.printf("minY: %d, maxY: %d\n", minY, maxY);
-
+        // Hledání průsečíků a jejich vyplnění
         for (int y = minY; y <= maxY; y++) {
-            //System.out.printf("finding intersections on y=%d\n", y);
              List<Integer> intersections = new ArrayList<>();
 
-             for (int k = 0; k < edges.size(); k++) {
+             for (int j = 0; j < edges.size(); j++) {
                  // Pokud má scan line průsečík s hranou získáme daný průsečík a vložíme ho do seznamu
-                 if (edges.get(k).hasIntersection(y)) {
-                     intersections.add(edges.get(k).getIntersection(y));
+                 if (edges.get(j).hasIntersection(y)) {
+                     intersections.add(edges.get(j).getIntersection(y));
                  }
              }
-             // vnořený cyklus
-            // projít všechny hrany (list edges)
-            // pokud má hrana průsečík na daném Y tak vypočítat X hodnotu na hodnotu průsečíku a uložit ji do seznamu
-
-            // nyní je naplněný seznam průsečíků
 
             // Seřazení průsečíků
-            /** for (int l = 0; l < intersections.size(); l++) {
-                //System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
-            }*/
-
-            //System.out.println("sorting intersetions ...");
             Collections.sort(intersections);
 
-            /**for (int l = 0; l < intersections.size(); l++) {
-                System.out.printf("intersection %d: %d\n", l+1, intersections.get(l));
-            }*/
-
+             // Spojení průsečíků barevnou úsečkou (vyplnění řádku na aktuálním y)
             for (int m = 0; m < intersections.size(); m += 2) {
-                filledLineRasterizer.rasterize(intersections.get(m), y, intersections.get(m+1), y, Color.BLUE.getRGB(), false);
+                filledLineRasterizer.rasterize(intersections.get(m), y, intersections.get(m+1), y, fillColor, false);
             }
-
-            // vybarvení mezi průsečíky
-            // spojení vždy sudého s lichým -> 0. a 1., 2. a 3., 4. a 5., ...
-            // kreslení úseček (možná místo rasteru použít nějaký lineRasterizer ???)
-
         }
 
+        // Obtažení hrany polygonu
+        Point p1;
+        Point p2;
         for (int i = 0; i < points.size(); i++) {
-            if (i == points.size()-1) {
-                filledLineRasterizer.rasterize(points.get(i).x, points.get(i).y, points.getFirst().x, points.getFirst().y, Color.WHITE.getRGB(), false);
+            p1 = points.get(i);
+
+            if (i == points.size()-1) { // Spojení posledního bodu s prvním
+                p2 = points.getFirst();
             } else {
-                filledLineRasterizer.rasterize(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y, Color.WHITE.getRGB(), false);
+                p2 = points.get(i+1);
             }
+
+            filledLineRasterizer.rasterize(p1.x, p1.y, p2.x, p2.y, borderColor, false);
         }
-        // obtáhnout hranici tělesa definovaného pomocí listu points
     }
 }
