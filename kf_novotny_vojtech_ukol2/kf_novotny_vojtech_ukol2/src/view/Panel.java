@@ -17,7 +17,7 @@ public class Panel extends JPanel {
     }
 
     private static final int FPS = 1000 / 20;
-    public static final int WIDTH = 800, HEIGHT = 600;
+    public static final int WIDTH = 1200, HEIGHT = 800;
 
     Panel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));

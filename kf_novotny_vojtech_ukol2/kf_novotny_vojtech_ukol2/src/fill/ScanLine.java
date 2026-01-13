@@ -2,9 +2,7 @@ package fill;
 
 import model.Edge;
 import model.Point;
-import rasterize.FilledLineRasterizer;
 import rasterize.LineRasterizer;
-import rasterize.Raster;
 
 import java.awt.*;
 import java.util.ArrayList;

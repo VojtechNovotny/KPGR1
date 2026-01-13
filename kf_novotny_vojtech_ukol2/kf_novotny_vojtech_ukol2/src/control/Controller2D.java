@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Controller2D implements Controller {
 
-    private final Raster raster;
+    private final RasterBufferedImage raster;
     private RasterBufferedImage rasterCopy;
     private int x,y;
 
@@ -29,10 +29,12 @@ public class Controller2D implements Controller {
     private Point firstPolygonPoint;
 
     public Controller2D(Panel panel) {
-        this.raster = panel.getRaster();
+        this.raster = (RasterBufferedImage) panel.getRaster();
 
         initObjects(panel.getRaster());
         initListeners(panel);
+
+        createToolbar(raster);
     }
 
     private void initObjects(Raster raster) {
@@ -215,5 +217,12 @@ public class Controller2D implements Controller {
             RasterBufferedImage castedRaster = (RasterBufferedImage) raster;
             castedRaster.draw(rasterCopy);
         }
+    }
+
+    private void createToolbar(RasterBufferedImage raster) {
+        Graphics rasterGraphics = raster.getGraphics();
+        rasterGraphics.setColor(Color.WHITE);
+        rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+        rasterGraphics.drawString("Test", 1000, 100);
     }
 }
