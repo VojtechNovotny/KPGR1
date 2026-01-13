@@ -110,6 +110,13 @@ public class ScanLine implements Filler {
 
         }
 
+        for (int i = 0; i < points.size(); i++) {
+            if (i == points.size()-1) {
+                filledLineRasterizer.rasterize(points.get(i).x, points.get(i).y, points.getFirst().x, points.getFirst().y, Color.WHITE.getRGB(), false);
+            } else {
+                filledLineRasterizer.rasterize(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y, Color.WHITE.getRGB(), false);
+            }
+        }
         // obtáhnout hranici tělesa definovaného pomocí listu points
     }
 }
