@@ -49,9 +49,10 @@ public class Controller2D implements Controller {
 
         seedFill = new SeedFill(raster);
 
-        initTestScanLine(raster);
+        //initTestScanLine(raster);
     }
 
+    /**
     private void initTestScanLine(Raster raster) {
         List<Point> points = new ArrayList<Point>();
         points.add(new Point(200, 500));
@@ -81,6 +82,7 @@ public class Controller2D implements Controller {
         scanLine = new ScanLine(filledLineRasterizer, points, Color.BLUE.getRGB(), Color.WHITE.getRGB());
         scanLine.fill();
     }
+    */
 
     @Override
     public void initListeners(Panel panel) {
@@ -152,7 +154,7 @@ public class Controller2D implements Controller {
                 } else if (SwingUtilities.isLeftMouseButton(e)) {
                     switch(drawMode) {
                         case LINE:
-                            drawLine(e.getX(), e.getY(), false);
+                            drawLine(e.getX(), e.getY(), getActiveColorRGB(activeColor), false);
                             break;
                         default:
                             return;
@@ -251,10 +253,19 @@ public class Controller2D implements Controller {
         });
     }
 
-    private void drawLine(int endX, int endY, Boolean dashed) {
+    private void drawLine(int endX, int endY, int color, Boolean dashed) {
         raster.clear();
         pasteRasterCopy();
-        filledLineRasterizer.rasterize(x, y, endX, endY, Color.WHITE.getRGB(), dashed);
+        filledLineRasterizer.rasterize(x, y, endX, endY, color, dashed);
+    }
+
+    private int getActiveColorRGB(ActiveColor activeColor) {
+        return switch (activeColor) {
+            case ActiveColor.WHITE -> Color.WHITE.getRGB();
+            case ActiveColor.RED -> Color.RED.getRGB();
+            case ActiveColor.BLUE -> Color.BLUE.getRGB();
+            case ActiveColor.GREEN -> Color.GREEN.getRGB();
+        };
     }
 
     private void copyRaster() {
