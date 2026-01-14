@@ -16,7 +16,7 @@ public class ScanLine implements Filler {
     private final int fillColor;
     private final int borderColor; // na finální obtažení
 
-    public ScanLine(LineRasterizer filledLineRasterizer, List<Point> points, int fillColor, int borderColor) {
+    public ScanLine(LineRasterizer filledLineRasterizer, int fillColor, int borderColor) {
         this.filledLineRasterizer = filledLineRasterizer;
         this.points = points;
         this.fillColor = fillColor;
@@ -24,7 +24,7 @@ public class ScanLine implements Filler {
     }
 
     @Override
-    public void fill() {
+    public void fill(List<Point> points) {
         List<Edge> edges = new ArrayList<>();
         Edge edge;
         int minY = points.getFirst().y;

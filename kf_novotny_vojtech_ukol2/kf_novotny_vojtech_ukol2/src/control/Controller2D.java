@@ -9,7 +9,6 @@ import model.Point;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Controller2D implements Controller {
@@ -18,11 +17,12 @@ public class Controller2D implements Controller {
     private RasterBufferedImage rasterCopy;
     private final Graphics rasterGraphics;
     private int x,y;
+    private Polygon activePolygon; // uložení posledního polygonu, potřebné pro scanline
 
     private LineRasterizer filledLineRasterizer;
     private PolygonRasterizer polygonRasterizer;
     private SeedFill seedFill;
-    private ScanLine scanLine;
+    private ScanLine scanLineFiller;
 
     private enum DrawMode { LINE, POLYGON };
     private enum LineType { FULL, DASHED };
@@ -48,6 +48,7 @@ public class Controller2D implements Controller {
         polygonRasterizer = new PolygonRasterizer(raster);
 
         seedFill = new SeedFill(raster);
+        scanLineFiller = new ScanLine(raster, );
 
         //initTestScanLine(raster);
     }
@@ -152,13 +153,9 @@ public class Controller2D implements Controller {
                 if (e.isShiftDown()) {
                     // TODO
                 } else if (SwingUtilities.isLeftMouseButton(e)) {
-                    switch(drawMode) {
-                        case LINE:
-                            drawLine(e.getX(), e.getY(), getActiveColorRGB(activeColor), lineType == LineType.DASHED);
-                            break;
-                        default:
-                            return;
-                    }
+                    if (drawMode == DrawMode.LINE) {
+                        drawLine(e.getX(), e.getY(), getActiveColorRGB(activeColor), lineType == LineType.DASHED);
+                    };
                 } else if (SwingUtilities.isRightMouseButton(e)) {
                     //TODO
                 }
@@ -189,13 +186,13 @@ public class Controller2D implements Controller {
                     switch (drawMode) {
                         case DrawMode.LINE:
                             drawMode = DrawMode.POLYGON;
-                            rasterGraphics.clearRect(800, 115, 400, 20);
-                            rasterGraphics.drawString("Aktivní mód: Polygon", 800, 130);
+                            rasterGraphics.clearRect(48, 115, 400, 20);
+                            rasterGraphics.drawString("Aktivní mód: Polygon", 48, 130);
                             break;
                         case DrawMode.POLYGON:
                             drawMode = DrawMode.LINE;
-                            rasterGraphics.clearRect(800, 115, 400, 20);
-                            rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
+                            rasterGraphics.clearRect(48, 115, 400, 20);
+                            rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 130);
                             break;
                     }
                 }
@@ -205,13 +202,13 @@ public class Controller2D implements Controller {
                     switch (lineType) {
                         case LineType.FULL:
                             lineType = LineType.DASHED;
-                            rasterGraphics.clearRect(800, 195, 400, 20);
-                            rasterGraphics.drawString("Aktivní typ: Přerušovaná", 800, 210);
+                            rasterGraphics.clearRect(48, 195, 400, 20);
+                            rasterGraphics.drawString("Aktivní typ: Přerušovaná", 48, 210);
                             break;
                         case LineType.DASHED:
                             lineType = LineType.FULL;
-                            rasterGraphics.clearRect(800, 195, 400, 20);
-                            rasterGraphics.drawString("Aktivní typ: Plná", 800, 210);
+                            rasterGraphics.clearRect(48, 195, 400, 20);
+                            rasterGraphics.drawString("Aktivní typ: Plná", 48, 210);
                             break;
                     }
                 }
@@ -221,23 +218,23 @@ public class Controller2D implements Controller {
                     switch (activeColor) {
                         case ActiveColor.WHITE:
                             activeColor = ActiveColor.RED;
-                            rasterGraphics.clearRect(800, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Červená", 800, 290);
+                            rasterGraphics.clearRect(48, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Červená", 48, 290);
                             break;
                         case ActiveColor.RED:
                             activeColor = ActiveColor.BLUE;
-                            rasterGraphics.clearRect(800, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Modrá", 800, 290);
+                            rasterGraphics.clearRect(48, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Modrá", 48, 290);
                             break;
                         case ActiveColor.BLUE:
                             activeColor = ActiveColor.GREEN;
-                            rasterGraphics.clearRect(800, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Zelená", 800, 290);
+                            rasterGraphics.clearRect(48, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Zelená", 48, 290);
                             break;
                         case ActiveColor.GREEN:
                             activeColor = ActiveColor.WHITE;
-                            rasterGraphics.clearRect(800, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Bílá", 800, 290);
+                            rasterGraphics.clearRect(48, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Bílá", 48, 290);
                             break;
                     }
                 }
@@ -282,15 +279,19 @@ public class Controller2D implements Controller {
 
     private void createToolbar(RasterBufferedImage raster) {
         rasterGraphics.setColor(Color.WHITE);
-        rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+        rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
-        rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 800, 100);
-        rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
+        rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 48, 100);
+        rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 130);
 
-        rasterGraphics.drawString("Typ úsečky (T): Plná - Tečkovaná", 800, 180);
-        rasterGraphics.drawString("Aktivní typ: Plná", 800, 210);
+        rasterGraphics.drawString("Typ úsečky (T): Plná - Tečkovaná", 48, 180);
+        rasterGraphics.drawString("Aktivní typ: Plná", 48, 210);
 
-        rasterGraphics.drawString("Barva (B): Bílá - Červená - Modrá - Zelená", 800, 260);
-        rasterGraphics.drawString("Aktivní barva: Bílá", 800, 290);
+        rasterGraphics.drawString("Barva (B): Bílá - Červená - Modrá - Zelená", 48, 260);
+        rasterGraphics.drawString("Aktivní barva: Bílá", 48, 290);
+
+        rasterGraphics.drawString("Výpň posledního polygonu Scanline algoritmem (V)", 48, 340);
+        rasterGraphics.drawString("Výpň seed fill algoritmem (S + LeftMouseButton)", 48, 370);
+        rasterGraphics.drawString("Smazání plátna (C)", 48, 400);
     }
 }
