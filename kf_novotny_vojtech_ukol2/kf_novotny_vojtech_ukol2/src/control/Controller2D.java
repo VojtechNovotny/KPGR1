@@ -24,8 +24,12 @@ public class Controller2D implements Controller {
     private SeedFill seedFill;
     private ScanLine scanLine;
 
-    private enum DrawMode { LINE, DASHED_LINE, POLYGON };
+    private enum DrawMode { LINE, POLYGON };
+    private enum LineType { FULL, DASHED };
+    private enum ActiveColor { WHITE, RED, BLUE, GREEN };
     private DrawMode drawMode = DrawMode.LINE;
+    private LineType lineType = LineType.FULL;
+    private ActiveColor activeColor = ActiveColor.WHITE;
 
     private Point firstPolygonPoint;
 
@@ -150,9 +154,6 @@ public class Controller2D implements Controller {
                         case LINE:
                             drawLine(e.getX(), e.getY(), false);
                             break;
-                        case DASHED_LINE:
-                            drawLine(e.getX(), e.getY(), true);
-                            break;
                         default:
                             return;
                     }
@@ -181,23 +182,60 @@ public class Controller2D implements Controller {
                     // TODO
                 }
 
-                // Stisk klávesy "O" přepne na vykreslování tečkované úsečky
-                if (e.getKeyCode() == KeyEvent.VK_O) {
-                    drawMode = DrawMode.DASHED_LINE;
-                }
-
-                // Stisk klávesy "P" přepne na vykreslování polygonu
+                // Stisk klávesy "P" přepne na mód vykreslování
                 if (e.getKeyCode() == KeyEvent.VK_M) {
                     switch (drawMode) {
                         case DrawMode.LINE:
                             drawMode = DrawMode.POLYGON;
-                            rasterGraphics.clearRect(800, 117, 400, 20);
-                            //rasterGraphics.drawString("Aktivní mód: Polygon", 800, 130);
+                            rasterGraphics.clearRect(800, 115, 400, 20);
+                            rasterGraphics.drawString("Aktivní mód: Polygon", 800, 130);
                             break;
                         case DrawMode.POLYGON:
                             drawMode = DrawMode.LINE;
-                            rasterGraphics.clearRect(800, 117, 400, 20);
-                            //rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
+                            rasterGraphics.clearRect(800, 115, 400, 20);
+                            rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
+                            break;
+                    }
+                }
+
+                // Stisk klávesy "T" přepne na typ úsečky
+                if (e.getKeyCode() == KeyEvent.VK_T) {
+                    switch (lineType) {
+                        case LineType.FULL:
+                            lineType = LineType.DASHED;
+                            rasterGraphics.clearRect(800, 195, 400, 20);
+                            rasterGraphics.drawString("Aktivní typ: Přerušovaná", 800, 210);
+                            break;
+                        case LineType.DASHED:
+                            lineType = LineType.FULL;
+                            rasterGraphics.clearRect(800, 195, 400, 20);
+                            rasterGraphics.drawString("Aktivní typ: Plná", 800, 210);
+                            break;
+                    }
+                }
+
+                // Stisk klávesy "B" přepne aktivní barvu
+                if (e.getKeyCode() == KeyEvent.VK_B) {
+                    switch (activeColor) {
+                        case ActiveColor.WHITE:
+                            activeColor = ActiveColor.RED;
+                            rasterGraphics.clearRect(800, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Červená", 800, 290);
+                            break;
+                        case ActiveColor.RED:
+                            activeColor = ActiveColor.BLUE;
+                            rasterGraphics.clearRect(800, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Modrá", 800, 290);
+                            break;
+                        case ActiveColor.BLUE:
+                            activeColor = ActiveColor.GREEN;
+                            rasterGraphics.clearRect(800, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Zelená", 800, 290);
+                            break;
+                        case ActiveColor.GREEN:
+                            activeColor = ActiveColor.WHITE;
+                            rasterGraphics.clearRect(800, 275, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Bílá", 800, 290);
                             break;
                     }
                 }
@@ -234,7 +272,14 @@ public class Controller2D implements Controller {
     private void createToolbar(RasterBufferedImage raster) {
         rasterGraphics.setColor(Color.WHITE);
         rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+
         rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 800, 100);
         rasterGraphics.drawString("Aktivní mód: Úsečka", 800, 130);
+
+        rasterGraphics.drawString("Typ úsečky (T): Plná - Tečkovaná", 800, 180);
+        rasterGraphics.drawString("Aktivní typ: Plná", 800, 210);
+
+        rasterGraphics.drawString("Barva (B): Bílá - Červená - Modrá - Zelená", 800, 260);
+        rasterGraphics.drawString("Aktivní barva: Bílá", 800, 290);
     }
 }
