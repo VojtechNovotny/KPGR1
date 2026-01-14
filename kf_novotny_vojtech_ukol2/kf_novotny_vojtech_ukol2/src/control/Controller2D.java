@@ -16,7 +16,7 @@ public class Controller2D implements Controller {
 
     private final RasterBufferedImage raster;
     private RasterBufferedImage rasterCopy;
-    private Graphics rasterGraphics;
+    private final Graphics rasterGraphics;
     private int x,y;
 
     private LineRasterizer filledLineRasterizer;
@@ -154,7 +154,7 @@ public class Controller2D implements Controller {
                 } else if (SwingUtilities.isLeftMouseButton(e)) {
                     switch(drawMode) {
                         case LINE:
-                            drawLine(e.getX(), e.getY(), getActiveColorRGB(activeColor), false);
+                            drawLine(e.getX(), e.getY(), getActiveColorRGB(activeColor), lineType == LineType.DASHED);
                             break;
                         default:
                             return;
