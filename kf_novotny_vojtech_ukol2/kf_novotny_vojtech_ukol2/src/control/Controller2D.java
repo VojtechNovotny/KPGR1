@@ -137,6 +137,7 @@ public class Controller2D implements Controller {
                 // Stisk klávesy "C" vymaže plátno
                 if (e.getKeyCode() == KeyEvent.VK_C) {
                     raster.clear();
+                    createToolbar(rasterGraphics);
                     polygonDrawStarted = false;
                 }
 
