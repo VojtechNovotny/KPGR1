@@ -151,13 +151,13 @@ public class Controller2D implements Controller {
                     switch (drawMode) {
                         case DrawMode.LINE:
                             drawMode = DrawMode.POLYGON;
-                            rasterGraphics.clearRect(48, 115, 400, 20);
-                            rasterGraphics.drawString("Aktivní mód: Polygon", 48, 130);
+                            rasterGraphics.clearRect(48, 55, 400, 20);
+                            rasterGraphics.drawString("Aktivní mód: Polygon", 48, 70);
                             break;
                         case DrawMode.POLYGON:
                             drawMode = DrawMode.LINE;
-                            rasterGraphics.clearRect(48, 115, 400, 20);
-                            rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 130);
+                            rasterGraphics.clearRect(48, 55, 400, 20);
+                            rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 70);
                             break;
                     }
                 }
@@ -167,13 +167,13 @@ public class Controller2D implements Controller {
                     switch (lineType) {
                         case LineType.FULL:
                             lineType = LineType.DASHED;
-                            rasterGraphics.clearRect(48, 195, 400, 20);
-                            rasterGraphics.drawString("Aktivní typ: Přerušovaná", 48, 210);
+                            rasterGraphics.clearRect(48, 135, 400, 20);
+                            rasterGraphics.drawString("Aktivní typ: Přerušovaná", 48, 150);
                             break;
                         case LineType.DASHED:
                             lineType = LineType.FULL;
-                            rasterGraphics.clearRect(48, 195, 400, 20);
-                            rasterGraphics.drawString("Aktivní typ: Plná", 48, 210);
+                            rasterGraphics.clearRect(48, 135, 400, 20);
+                            rasterGraphics.drawString("Aktivní typ: Plná", 48, 150);
                             break;
                     }
                 }
@@ -183,23 +183,23 @@ public class Controller2D implements Controller {
                     switch (activeColor) {
                         case ActiveColor.WHITE:
                             activeColor = ActiveColor.RED;
-                            rasterGraphics.clearRect(48, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Červená", 48, 290);
+                            rasterGraphics.clearRect(48, 215, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Červená", 48, 230);
                             break;
                         case ActiveColor.RED:
                             activeColor = ActiveColor.BLUE;
-                            rasterGraphics.clearRect(48, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Modrá", 48, 290);
+                            rasterGraphics.clearRect(48, 215, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Modrá", 48, 230);
                             break;
                         case ActiveColor.BLUE:
                             activeColor = ActiveColor.GREEN;
-                            rasterGraphics.clearRect(48, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Zelená", 48, 290);
+                            rasterGraphics.clearRect(48, 215, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Zelená", 48, 230);
                             break;
                         case ActiveColor.GREEN:
                             activeColor = ActiveColor.WHITE;
-                            rasterGraphics.clearRect(48, 275, 400, 20);
-                            rasterGraphics.drawString("Aktivní barva: Bílá", 48, 290);
+                            rasterGraphics.clearRect(48, 215, 400, 20);
+                            rasterGraphics.drawString("Aktivní barva: Bílá", 48, 230);
                             break;
                     }
                 }
@@ -247,16 +247,16 @@ public class Controller2D implements Controller {
         rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
         rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 48, 40);
-        rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 130);
+        rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 70);
 
-        rasterGraphics.drawString("Typ úsečky (T): Plná - Tečkovaná", 48, 180);
-        rasterGraphics.drawString("Aktivní typ: Plná", 48, 210);
+        rasterGraphics.drawString("Typ úsečky (T): Plná - Tečkovaná", 48, 120);
+        rasterGraphics.drawString("Aktivní typ: Plná", 48, 150);
 
-        rasterGraphics.drawString("Barva (B): Bílá - Červená - Modrá - Zelená", 48, 260);
-        rasterGraphics.drawString("Aktivní barva: Bílá", 48, 290);
+        rasterGraphics.drawString("Barva (B): Bílá - Červená - Modrá - Zelená", 48, 200);
+        rasterGraphics.drawString("Aktivní barva: Bílá", 48, 230);
 
-        rasterGraphics.drawString("Výpň posledního polygonu Scanline algoritmem (V)", 48, 340);
-        rasterGraphics.drawString("Výpň seed fill algoritmem (S + LeftMouseButton)", 48, 370);
-        rasterGraphics.drawString("Smazání plátna (C)", 48, 400);
+        rasterGraphics.drawString("Výpň posledního polygonu Scanline algoritmem (V)", 48, 280);
+        rasterGraphics.drawString("Výpň seed fill algoritmem (S + LeftMouseButton)", 48, 310);
+        rasterGraphics.drawString("Smazání plátna (C)", 48, 340);
     }
 }
