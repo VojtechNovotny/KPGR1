@@ -76,7 +76,7 @@ public class Controller2D implements Controller {
 
                     copyRaster();
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    if (drawMode == DrawMode.POLYGON) {
+                    if (drawMode == DrawMode.POLYGON && polygonDrawStarted) {
                         raster.clear();
                         pasteRasterCopy();
                         lastPolygon = polygonRasterizer.closePolygon();
@@ -127,8 +127,6 @@ public class Controller2D implements Controller {
                                 lineType == LineType.DASHED
                         );
                     }
-                } else if (SwingUtilities.isRightMouseButton(e)) {
-                    //TODO
                 }
             }
         });
@@ -143,7 +141,11 @@ public class Controller2D implements Controller {
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_V) {
-                    scanLineFiller.fillPolygon(lastPolygon.getPoints(), getActiveColorRGB(activeColor), lastPolygon.getColor());
+                    scanLineFiller.fillPolygon(
+                            lastPolygon.getPoints(),
+                            getActiveColorRGB(activeColor),
+                            lastPolygon.getColor()
+                    );
                 }
 
                 // Stisk klávesy "P" přepne na mód vykreslování
