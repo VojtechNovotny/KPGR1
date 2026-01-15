@@ -3,35 +3,46 @@ package rasterize;
 import model.Polygon;
 import model.Point;
 
-import java.awt.Color;
-
 public class PolygonRasterizer {
 
     private Polygon polygon;
-    private FilledLineRasterizer filledLineRasterizer;
+    private final LineRasterizer filledLineRasterizer;
 
-    public PolygonRasterizer(Raster raster) {
-        this.polygon = new Polygon();
-        this.filledLineRasterizer = new FilledLineRasterizer(raster);
+    public PolygonRasterizer(LineRasterizer lineRasterizer) {
+        this.filledLineRasterizer = lineRasterizer;
     }
 
-    public void rasterize(int x1, int y1, int x2, int y2) {
-        Point lastPoint = polygon.getLastPoint();
-
-        if (lastPoint == null) {
-            filledLineRasterizer.rasterize(x1, y1, x2, y2, Color.WHITE.getRGB(), false);
-        } else {
-            filledLineRasterizer.rasterize(lastPoint.x, lastPoint.y, x2, y2, Color.WHITE.getRGB(), false);
-        };
+    public void rasterize(int x, int y) {
+        filledLineRasterizer.rasterize(
+                polygon.getPoints().getLast().x,
+                polygon.getPoints().getLast().y,
+                x,
+                y,
+                polygon.getColor(),
+                false
+        );
     }
 
-    public void closePolygon(Point firstPolygonPoint) {
-        Point lastPoint = polygon.getLastPoint();
-        filledLineRasterizer.rasterize(lastPoint.x, lastPoint.y, firstPolygonPoint.x, firstPolygonPoint.y, Color.WHITE.getRGB(), false);
+    public void start(Point point, int color) {
+        this.polygon = new Polygon(color);
+        addPoint(point);
     }
 
     public void addPoint(Point newPoint) {
         polygon.addPoints(newPoint);
-        polygon.setLastPoint(newPoint);
+    }
+
+    public Polygon closePolygon() {
+        System.out.printf("closePolygon() called, last point: (%d, %d), first point: (%d, %d)\n", polygon.getPoints().getLast().x, polygon.getPoints().getLast().y, polygon.getPoints().getFirst().x, polygon.getPoints().getFirst().y);
+        filledLineRasterizer.rasterize(
+                polygon.getPoints().getLast().x,
+                polygon.getPoints().getLast().y,
+                polygon.getPoints().getFirst().x,
+                polygon.getPoints().getFirst().y,
+                polygon.getColor(),
+                false
+        );
+
+        return polygon;
     }
 }

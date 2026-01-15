@@ -5,11 +5,11 @@ import fill.SeedFill;
 import rasterize.*;
 import view.Panel;
 import model.Point;
+import model.Polygon;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 
 public class Controller2D implements Controller {
 
@@ -17,21 +17,21 @@ public class Controller2D implements Controller {
     private RasterBufferedImage rasterCopy;
     private final Graphics rasterGraphics;
     private int x,y;
-    private Polygon activePolygon; // uložení posledního polygonu, potřebné pro scanline
+    private Polygon lastPolygon; // uložení posledního polygonu, potřebné pro scanline
 
     private LineRasterizer filledLineRasterizer;
     private PolygonRasterizer polygonRasterizer;
     private SeedFill seedFill;
     private ScanLine scanLineFiller;
 
-    private enum DrawMode { LINE, POLYGON };
-    private enum LineType { FULL, DASHED };
-    private enum ActiveColor { WHITE, RED, BLUE, GREEN };
+    private enum DrawMode { LINE, POLYGON }
+    private enum LineType { FULL, DASHED }
+    private enum ActiveColor { WHITE, RED, BLUE, GREEN }
     private DrawMode drawMode = DrawMode.LINE;
     private LineType lineType = LineType.FULL;
     private ActiveColor activeColor = ActiveColor.WHITE;
 
-    private Point firstPolygonPoint;
+    private boolean polygonDrawStarted;
 
     public Controller2D(Panel panel) {
         this.raster = (RasterBufferedImage) panel.getRaster();
@@ -40,50 +40,16 @@ public class Controller2D implements Controller {
         initObjects(panel.getRaster());
         initListeners(panel);
 
-        createToolbar(raster);
+        createToolbar(rasterGraphics);
     }
 
     private void initObjects(Raster raster) {
         filledLineRasterizer = new FilledLineRasterizer(raster);
-        polygonRasterizer = new PolygonRasterizer(raster);
+        polygonRasterizer = new PolygonRasterizer(filledLineRasterizer);
 
         seedFill = new SeedFill(raster);
-        scanLineFiller = new ScanLine(raster, );
-
-        //initTestScanLine(raster);
+        scanLineFiller = new ScanLine(filledLineRasterizer);
     }
-
-    /**
-    private void initTestScanLine(Raster raster) {
-        List<Point> points = new ArrayList<Point>();
-        points.add(new Point(200, 500));
-        points.add(new Point(100, 300));
-        points.add(new Point(250, 100));
-        points.add(new Point(300, 300));
-        points.add(new Point(500, 300));
-        points.add(new Point(600, 100));
-        points.add(new Point(650, 500));
-
-        for (int i = 0; i < points.size(); i++) {
-            Point p1 = points.get(i);
-            Point p2;
-
-            if (i == points.size()-1) {
-                // Poslední bod spojí s prvním
-                p2 = points.getFirst();
-            } else {
-                p2 = points.get(i+1);
-            };
-
-            //System.out.printf("drawing line (%d) from |%d, %d| to |%d, %d|\n", i+1, p1.x, p1.y, p2.x, p2.y);
-
-            filledLineRasterizer.rasterize(p1.x, p1.y, p2.x, p2.y, Color.WHITE.getRGB(), false);
-        }
-
-        scanLine = new ScanLine(filledLineRasterizer, points, Color.BLUE.getRGB(), Color.WHITE.getRGB());
-        scanLine.fill();
-    }
-    */
 
     @Override
     public void initListeners(Panel panel) {
@@ -100,9 +66,9 @@ public class Controller2D implements Controller {
                     y = e.getY();
 
                     if (drawMode == DrawMode.POLYGON) {
-                        if (firstPolygonPoint == null) {
-                            firstPolygonPoint = new Point(x, y);
-                            polygonRasterizer.addPoint(firstPolygonPoint);
+                        if (!polygonDrawStarted) {
+                            polygonDrawStarted = true;
+                            polygonRasterizer.start(new Point(x, y), getActiveColorRGB(activeColor));
                         } else {
                             polygonRasterizer.addPoint(new Point(x, y));
                         }
@@ -113,8 +79,8 @@ public class Controller2D implements Controller {
                     if (drawMode == DrawMode.POLYGON) {
                         raster.clear();
                         pasteRasterCopy();
-                        polygonRasterizer.closePolygon(firstPolygonPoint);
-                        firstPolygonPoint = null;
+                        lastPolygon = polygonRasterizer.closePolygon();
+                        polygonDrawStarted = false;
                     }
                 }
             }
@@ -139,10 +105,10 @@ public class Controller2D implements Controller {
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
 
-                if (drawMode == DrawMode.POLYGON && firstPolygonPoint != null) {
+                if (drawMode == DrawMode.POLYGON && polygonDrawStarted) {
                     raster.clear();
                     pasteRasterCopy();
-                    polygonRasterizer.rasterize(firstPolygonPoint.x, firstPolygonPoint.y, e.getX(), e.getY());
+                    polygonRasterizer.rasterize(e.getX(), e.getY());
                 }
             }
 
@@ -154,8 +120,13 @@ public class Controller2D implements Controller {
                     // TODO
                 } else if (SwingUtilities.isLeftMouseButton(e)) {
                     if (drawMode == DrawMode.LINE) {
-                        drawLine(e.getX(), e.getY(), getActiveColorRGB(activeColor), lineType == LineType.DASHED);
-                    };
+                        drawLine(
+                                e.getX(),
+                                e.getY(),
+                                getActiveColorRGB(activeColor),
+                                lineType == LineType.DASHED
+                        );
+                    }
                 } else if (SwingUtilities.isRightMouseButton(e)) {
                     //TODO
                 }
@@ -168,17 +139,11 @@ public class Controller2D implements Controller {
                 // Stisk klávesy "C" vymaže plátno
                 if (e.getKeyCode() == KeyEvent.VK_C) {
                     raster.clear();
-                    firstPolygonPoint = null;
+                    polygonDrawStarted = false;
                 }
 
-                // Stisk klávesy "U" přepne na vykreslování normální úsečky
-                if (e.getKeyCode() == KeyEvent.VK_U) {
-                    drawMode = DrawMode.LINE;
-                }
-
-                // Stisk klávesy "I" přepne na vykreslování barevné úsečky
-                if (e.getKeyCode() == KeyEvent.VK_I) {
-                    // TODO
+                if (e.getKeyCode() == KeyEvent.VK_V) {
+                    scanLineFiller.fillPolygon(lastPolygon.getPoints(), getActiveColorRGB(activeColor), lastPolygon.getColor());
                 }
 
                 // Stisk klávesy "P" přepne na mód vykreslování
@@ -277,11 +242,11 @@ public class Controller2D implements Controller {
         }
     }
 
-    private void createToolbar(RasterBufferedImage raster) {
+    private void createToolbar(Graphics rasterGraphics) {
         rasterGraphics.setColor(Color.WHITE);
         rasterGraphics.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
-        rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 48, 100);
+        rasterGraphics.drawString("Mód kreslení (M): Úsečka - Polygon", 48, 40);
         rasterGraphics.drawString("Aktivní mód: Úsečka", 48, 130);
 
         rasterGraphics.drawString("Typ úsečky (T): Plná - Tečkovaná", 48, 180);

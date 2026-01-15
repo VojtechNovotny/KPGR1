@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface Filler {
 
-    void fill(List<Point> points);
+    void fill();
 
 }

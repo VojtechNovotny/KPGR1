@@ -12,19 +12,23 @@ import java.util.List;
 public class ScanLine implements Filler {
 
     private final LineRasterizer filledLineRasterizer;
-    private final List<Point> points;
-    private final int fillColor;
-    private final int borderColor; // na finální obtažení
+    private List<Point> points;
+    private int fillColor;
+    private int borderColor; // na finální obtažení
 
-    public ScanLine(LineRasterizer filledLineRasterizer, int fillColor, int borderColor) {
+    public ScanLine(LineRasterizer filledLineRasterizer) {
         this.filledLineRasterizer = filledLineRasterizer;
+    }
+
+    public void fillPolygon(List<Point> points, int fillColor, int borderColor) {
         this.points = points;
         this.fillColor = fillColor;
         this.borderColor = borderColor;
+        fill();
     }
 
     @Override
-    public void fill(List<Point> points) {
+    public void fill() {
         List<Edge> edges = new ArrayList<>();
         Edge edge;
         int minY = points.getFirst().y;
